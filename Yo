@@ -1,0 +1,47 @@
+// name : runtime
+// description : Affiche depuis combien de temps le bot est en ligne.
+// author : ZOKOU-GEM
+// date : 28/02/2026
+
+const { zokou } = require("../framework/zokou");
+
+/**
+ * Fonction pour convertir les secondes en format J/H/M/S
+ */
+function runtime(seconds) {
+    seconds = Number(seconds);
+    const d = Math.floor(seconds / (3600 * 24));
+    const h = Math.floor((seconds % (3600 * 24)) / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = Math.floor(seconds % 60);
+
+    const dDisplay = d > 0 ? `${d}j ` : "";
+    const hDisplay = h > 0 ? `${h}h ` : "";
+    const mDisplay = m > 0 ? `${m}m ` : "";
+    const sDisplay = s > 0 ? `${s}s` : "";
+    
+    return dDisplay + hDisplay + mDisplay + sDisplay;
+}
+
+zokou(
+  {
+    nomCom: "runtime",
+    categorie: "Général",
+    plugin: "runtime",
+    reaction: "⏲️",
+    desc: "Affiche la durée d'activité du bot.",
+    alias: ["uptime", "en-ligne"],
+  },
+  async (dest, zk, commandeOptions) => {
+    const { repondre, ms } = commandeOptions;
+
+    // process.uptime() renvoie le temps en secondes depuis le lancement du script
+    const duree = runtime(process.uptime());
+
+    const message = `*📊 ÉTAT DU SYSTÈME*\n\n` +
+                    `*Uptime :* ${duree}\n` +
+                    `*Statut :* Opérationnel ✅`;
+
+    await repondre(message);
+  }
+);
